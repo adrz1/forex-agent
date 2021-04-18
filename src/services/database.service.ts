@@ -1,6 +1,8 @@
 import { RedisClient } from "redis";
 import { SubscriptionError } from "../errors/subscription.error";
 
+
+//BASIC REDIS DATABASE IMPLEMENTATION
 export class DatabaseService {
     client: RedisClient | null = null;
     listeners: Map<string,(message:string)=>void> = new Map();
@@ -29,5 +31,8 @@ export class DatabaseService {
             console.error(e.message);
             throw new SubscriptionError();
         }
+    }
+    publish(channel:string,message:string){
+        this.client?.publish(channel,message);
     }
 }

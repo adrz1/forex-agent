@@ -1,4 +1,5 @@
-import { AgentService } from "./services/agent.service";
+import { CoinBaseAgent } from "./coinbase/agent/coinbase.agent";
+import { Operation, TransactionRequest } from "./interfaces/transaction.interface";
 import { DatabaseService } from "./services/database.service";
 
 class Server{
@@ -17,8 +18,26 @@ class Server{
     }
     start(){
         this.initLogger();
+        
+        //ESTABLISH DATABASE CONNECTION
         const dataBase:DatabaseService = new DatabaseService();
-        dataBase.listen('currency_prices',new AgentService().execute);
+
+        //CREATE AN AGENT TO PROCESS CURRENCY INFO
+        const agent = new CoinBaseAgent();
+
+        //SET BUY OPERATION TO THE AGENT
+        agent.buy = (data:TransactionRequest)=>{
+            dataBase.publish(Operation.BUY,JSON.stringify(data));
+        };
+
+        //SET SELL OPERTAION TO THE AGENT
+        agent.sell = (data:TransactionRequest)=>{
+            dataBase.publish(Operation.SELL,JSON.stringify(data));
+        };
+
+        //START LISENING EVENTS
+        dataBase.listen('currency_prices',(message:string) => agent.execute(message));
+
     }
 }
 
