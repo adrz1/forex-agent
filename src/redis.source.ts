@@ -1,12 +1,14 @@
 import { RedisClient } from "redis";
-import { SubscriptionError } from "../errors/subscription.error";
+import { SubscriptionError } from "./lib/errors/subscription.error";
+import { CurrencyPriceList } from "./lib/interfaces/currency.interface";
+import { Publisher } from "./lib/interfaces/publisher.interface";
+import { DataSource } from "./lib/interfaces/source.interface";
+import { Operation, TransactionRequest } from "./lib/interfaces/transaction.interface";
 
-
-//BASIC REDIS DATABASE IMPLEMENTATION
-export class DatabaseService {
+export class RedisSource implements DataSource, Publisher{
     client: RedisClient | null = null;
     listeners: Map<string,(message:string)=>void> = new Map();
-    constructor() {
+    constructor(){
         try{
             this.client = new RedisClient({
                 port: 6379,
@@ -16,7 +18,16 @@ export class DatabaseService {
             console.error(e);
         }
     }
-    listen(topic: string, callback: (message: string) => void) {
+    buy(data: TransactionRequest):void{
+        this.client?.publish(Operation.BUY,JSON.stringify(data));
+    }
+
+    sell(data: TransactionRequest):void {
+        this.client?.publish(Operation.SELL,JSON.stringify(data));
+    }
+
+
+    public listen(topic: string, callback: (message: string) => void) {
         try {
 
             this.client?.on('message', (channel,message)=>{
@@ -32,7 +43,8 @@ export class DatabaseService {
             throw new SubscriptionError();
         }
     }
-    publish(channel:string,message:string){
-        this.client?.publish(channel,message);
+
+    start():void{
+        
     }
 }

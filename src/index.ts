@@ -1,30 +1,23 @@
 import { AgentOptions } from "./lib/interfaces/agent.options.interface";
-import { Operation, TransactionRequest } from "./lib/interfaces/transaction.interface";
-import { MyAgent } from "./test.agent";
-import { DatabaseService } from "./lib/services/database.service";
-import { CoinBaseSource } from "./sources/coinbase/coinbase.source";
-import { Server } from "./lib/server";
+import { DefaultAgent } from "./default.agent";
+import { RedisSource } from "./redis.source";
+import { SimpleLogger } from './utils/logger';
+
+SimpleLogger.initLogger();
 
 //ESTABLISH DATABASE CONNECTION
-const dataBase: DatabaseService = new DatabaseService();
+const source: RedisSource = new RedisSource();
 
 //CREATE AN AGENT TO PROCESS CURRENCY INFO
 const agentOptions: AgentOptions = {
-    //SET THE AGENT SOURCE OF INFORMATION
-    source: new CoinBaseSource(),
-
     //SET BUY OPERATION TO THE AGENT
-    buy: (data: TransactionRequest) => {
-        dataBase.publish(Operation.BUY, JSON.stringify(data));
-    },
+    buy: source.buy,
+
     //SET SELL OPERTAION TO THE AGENT
-    sell: (data: TransactionRequest) => {
-        dataBase.publish(Operation.SELL, JSON.stringify(data));
-    }
+    sell: source.sell
 }
-const agent = new MyAgent(agentOptions);
 
-//START THE SERVER
-const server: Server = new Server(dataBase);
+const agent = new DefaultAgent(agentOptions);
+source.listen('currency_prices', (message: string) => agent.onData(message));
 
-server.start(agent);
+source.start();

@@ -1,5 +1,7 @@
-import { Currency } from "./currency.interface";
+import { CurrencyPriceList } from "./currency.interface";
 
-export interface DataSource{
-    read(message:string):Currency[];
+export interface DataSource {
+
+    listen(channel: string, callback: (data: string) => void): void;
+    start(): void;
 }

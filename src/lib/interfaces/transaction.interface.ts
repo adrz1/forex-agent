@@ -3,7 +3,6 @@ export  enum Operation{
     BUY = 'buy'
 }
 
-
 export interface TransactionRequest{
     currency:string;
     amount:number;
