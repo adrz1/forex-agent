@@ -9,8 +9,8 @@ export abstract class Agent {
     protected sell: (data: TransactionRequest) => void;
 
     constructor(options:AgentOptions){
-        this.buy = options.buy;
-        this.sell = options.sell;
+        this.buy = options.publisher.buy;
+        this.sell = options.publisher.sell;
     }
 
     //CURRENCIES TO WATCH FOR

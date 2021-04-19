@@ -10,11 +10,8 @@ const source: RedisSource = new RedisSource();
 
 //CREATE AN AGENT TO PROCESS CURRENCY INFO
 const agentOptions: AgentOptions = {
-    //SET BUY OPERATION TO THE AGENT
-    buy: source.buy,
-
-    //SET SELL OPERTAION TO THE AGENT
-    sell: source.sell
+    //SET PUBLISHER TO THE AGENT
+    publisher: source,
 }
 
 const agent = new DefaultAgent(agentOptions);
