@@ -28,5 +28,6 @@ services:
       redis:
         condition: service_healthy
     environment:
+      - CURRENCIES=BTC,ETH
       - REDIS_HOST=redis
       - DEBUG=y

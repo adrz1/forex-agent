@@ -4,6 +4,9 @@
   "description": "a forex buying and selling agent\"",
   "main": "index.js",
   "scripts": {
+    "start:dev": "nodemon",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "adrz1",
@@ -11,5 +14,13 @@
   "dependencies": {
     "redis": "^3.1.1",
     "simple-node-logger": "^18.12.24"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.41",
+    "@types/redis": "^2.8.28",
+    "nodemon": "^2.0.7",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
   }
 }
