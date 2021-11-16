@@ -1,6 +1,5 @@
 import { RedisClient } from "redis";
 import { SubscriptionError } from "./lib/errors/subscription.error";
-import { CurrencyPriceList } from "./lib/interfaces/currency.interface";
 import { Publisher } from "./lib/interfaces/publisher.interface";
 import { DataSource } from "./lib/interfaces/source.interface";
 import { Operation, TransactionRequest } from "./lib/interfaces/transaction.interface";
@@ -26,10 +25,8 @@ export class RedisSource implements DataSource, Publisher{
         this.client?.publish(Operation.SELL,JSON.stringify(data));
     }
 
-
     public listen(topic: string, callback: (message: string) => void) {
         try {
-
             this.client?.on('message', (channel,message)=>{
                 const callback = this.listeners.get(channel);
                 if(callback){

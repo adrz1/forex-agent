@@ -1,5 +1,7 @@
 FROM node:14-slim
 
+EXPOSE 8080
+
 # Create app directory
 WORKDIR /usr/src/app
 
